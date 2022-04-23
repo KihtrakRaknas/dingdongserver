@@ -18,7 +18,7 @@ app.post('/', (req, res) => {
             message: `You rang the bell twice within 2 minutes...` 
         })
 
-    fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=${name} is at the door!&body=${message ? message : 'No message'}&webhook=${process.env.DOOROPENHOOK}`).then(() => {
+    fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=${name} (${fingerprint}) at door!&body=${message ? message : 'No message'}&webhook=${process.env.DOOROPENHOOK}`).then(() => {
         fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
         res.json({ timeout: fingerprints[fingerprint], success: true, message: "" })
     })
