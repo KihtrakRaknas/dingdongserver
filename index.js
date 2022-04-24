@@ -24,13 +24,13 @@ app.post('/', (req, res) => {
             message: `You rang the bell twice within 2 minutes...` 
         })
 
-    db.ref(fingerprint).once("value", function(snapshot) {
+    db.ref(""+fingerprint).once("value", function(snapshot) {
         const val = snapshot.val()
         returnFinger = fingerprint
         if(val)
             returnFinger = val.name
         else{
-            fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=Unknown Fingerprint (${name})&body=Fingerprint: ${fingerprint}&webhook=${encodeURIComponent(`https://ding-dong-server.herokuapp.com/assignFingerprint?code=${process.env.SECRETCODE}&fingerprint=${fingerprint}&name=`)}&webhookParam=true`)
+            fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=Unknown Fingerprint (${fingerprint})&body=User input name: ${name}&webhook=${encodeURIComponent(`https://ding-dong-server.herokuapp.com/assignFingerprint?code=${process.env.SECRETCODE}&fingerprint=${fingerprint}&name=`)}&webhookParam=true`)
         }
         fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=🔔 ${name} (${returnFinger}) 🔔&body=${message ? message : 'No message'}&webhook=${process.env.DOOROPENHOOK}`).then(() => {
             fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
@@ -48,7 +48,7 @@ app.post('/', (req, res) => {
 app.get('/assignFingerprint', (req, res) => {
     const { code, fingerprint, name } = req.query
     if(code == process.env.SECRETCODE){
-        db.ref(fingerprint).update({name})
+        db.ref(""+fingerprint).update({name})
         return res.send("Updated successfully")
     }
     res.send("Invalid code")
