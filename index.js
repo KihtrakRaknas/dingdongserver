@@ -23,6 +23,9 @@ app.post('/', (req, res) => {
             success: false, 
             message: `You rang the bell twice within 2 minutes...` 
         })
+    
+    // Add a 3 second timeout to prevent spam while the database lookup is occuring
+    fingerprints[fingerprint] = new Date().getTime() + 1000 * 3
 
     db.ref(""+fingerprint).once("value", function(snapshot) {
         const val = snapshot.val()
