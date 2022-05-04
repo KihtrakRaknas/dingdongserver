@@ -16,7 +16,7 @@ const port = process.env.PORT || 3000
 fingerprints = {}
 
 app.post('/', (req, res) => {
-    const { fingerprint, name, message } = req.body
+    const { fingerprint, name, message, token } = req.body
     if (!fingerprint || (fingerprints[fingerprint] && new Date().getTime() - fingerprints[fingerprint] < 0))
         return res.json({ 
             timeout: fingerprints[fingerprint], 
@@ -26,6 +26,30 @@ app.post('/', (req, res) => {
     
     // Add a 3 second timeout to prevent spam while the database lookup is occuring
     fingerprints[fingerprint] = new Date().getTime() + 1000 * 3
+
+    const googleResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+        method: 'post',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            secret: process.env.CAPTCHASECRETKEY,
+            response: token
+        })
+    })
+    .then(response => response.json())
+    .catch(() => ({success: true}));
+
+    if(googleResponse.success == false){
+        const errMsg = googleResponse?.["error-codes"]?.join('\n') || ""
+        return res.json({ 
+            timeout: fingerprints[fingerprint], 
+            success: false, 
+            message: `Failed reCAPTCHA validation: \n${errMsg}` 
+        })
+    }
+    console.log(googleResponse)
 
     db.ref(""+fingerprint).once("value", function(snapshot) {
         const val = snapshot.val()
