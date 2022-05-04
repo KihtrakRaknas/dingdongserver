@@ -23,6 +23,12 @@ app.post('/', (req, res) => {
             success: false, 
             message: `You rang the bell twice within 2 minutes...` 
         })
+
+    if (!token)
+        return res.json({ 
+            success: false, 
+            message: `No Captcha token provided`` 
+        })
     
     // Add a 3 second timeout to prevent spam while the database lookup is occuring
     fingerprints[fingerprint] = new Date().getTime() + 1000 * 3
