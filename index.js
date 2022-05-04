@@ -47,6 +47,9 @@ app.post('/', async (req, res) => {
     .then(response => response.json())
     .catch(() => ({success: true, score:1}));
 
+    // Logging for fun
+    console.log({...req.body,...googleResponse})
+
     if(googleResponse.success == false){
         const errMsg = googleResponse?.["error-codes"]?.join('\n') || ""
         return res.json({ 
@@ -63,9 +66,6 @@ app.post('/', async (req, res) => {
             message: `You only have a ${googleResponse.score*100}% chance of being human.\nTry not being a bot 🤷‍♂️` 
         })
     }
-
-    // Logging for fun
-    console.log({...req.body,...googleResponse})
 
     const nameEnc = encodeURIComponent(name)
     const messageEnc = encodeURIComponent(message)
