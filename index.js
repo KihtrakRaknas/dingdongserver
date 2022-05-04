@@ -33,7 +33,7 @@ app.post('/', async (req, res) => {
     // Add a 10 second timeout to prevent spam while the database lookup is occuring
     fingerprints[fingerprint] = new Date().getTime() + 1000 * 10
 
-    const googleResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+    const googleResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHASECRETKEY}&response=${token}`, {
         method: 'post',
         headers: {
             'Accept': 'application/json',
