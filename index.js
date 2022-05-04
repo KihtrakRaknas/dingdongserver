@@ -45,7 +45,7 @@ app.post('/', async (req, res) => {
         })
     })
     .then(response => response.json())
-    .catch(() => ({success: true}));
+    .catch(() => ({success: true, score:1}));
 
     if(googleResponse.success == false){
         const errMsg = googleResponse?.["error-codes"]?.join('\n') || ""
@@ -55,7 +55,17 @@ app.post('/', async (req, res) => {
             message: `Failed reCAPTCHA validation: \n${errMsg}` 
         })
     }
-    console.log(googleResponse)
+
+    if(googleResponse.score < 0.5){
+        return res.json({ 
+            timeout: fingerprints[fingerprint], 
+            success: false, 
+            message: `You only have a ${googleResponse.score*100}% chance of being human.\nTry not being a bot 🤷‍♂️` 
+        })
+    }
+
+    // Logging for fun
+    console.log({...req.body,...googleResponse})
 
     db.ref(""+fingerprint).once("value", function(snapshot) {
         const val = snapshot.val()
