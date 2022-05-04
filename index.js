@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000
 
 fingerprints = {}
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
     const { fingerprint, name, message, token } = req.body
     if (!fingerprint || (fingerprints[fingerprint] && new Date().getTime() - fingerprints[fingerprint] < 0))
         return res.json({ 
@@ -27,7 +27,7 @@ app.post('/', (req, res) => {
     if (!token)
         return res.json({ 
             success: false, 
-            message: `No Captcha token provided`` 
+            message: `No Captcha token provided` 
         })
     
     // Add a 3 second timeout to prevent spam while the database lookup is occuring
