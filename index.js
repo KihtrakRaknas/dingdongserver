@@ -30,8 +30,8 @@ app.post('/', async (req, res) => {
             message: `No Captcha token provided` 
         })
     
-    // Add a 3 second timeout to prevent spam while the database lookup is occuring
-    fingerprints[fingerprint] = new Date().getTime() + 1000 * 3
+    // Add a 10 second timeout to prevent spam while the database lookup is occuring
+    fingerprints[fingerprint] = new Date().getTime() + 1000 * 10
 
     const googleResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
         method: 'post',
