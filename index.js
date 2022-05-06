@@ -17,6 +17,7 @@ fingerprints = {}
 
 app.post('/', async (req, res) => {
     const { fingerprint, name, message, token } = req.body
+
     if(!fingerprint || isNaN(fingerprint))
         return res.json({ 
             success: false, 
