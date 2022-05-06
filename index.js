@@ -81,8 +81,8 @@ app.post('/', async (req, res) => {
             fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
             res.json({ timeout: fingerprints[fingerprint], success: true, message: "" })
         })
-    }, (errorObject) => {
-        console.log('The read failed: ' + errorObject.name);
+    }).catch((errorObject) => {
+        console.log('The read failed: ' + errorObject.reason);
         fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=🔔 ${nameEnc} (${fingerprint}) 🔔&body=${message ? messageEnc : 'No message'}&webhook=${process.env.DOOROPENHOOK}`).then(() => {
             fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
             res.json({ timeout: fingerprints[fingerprint], success: true, message: "" })
