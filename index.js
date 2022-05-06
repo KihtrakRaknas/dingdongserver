@@ -17,7 +17,13 @@ fingerprints = {}
 
 app.post('/', async (req, res) => {
     const { fingerprint, name, message, token } = req.body
-    if (!fingerprint || (fingerprints[fingerprint] && new Date().getTime() - fingerprints[fingerprint] < 0))
+    if(!fingerprint || isNaN(fingerprint))
+        return res.json({ 
+            success: false, 
+            message: `Invalid fingerprint: ${fingerprint}` 
+        })
+    
+    if (fingerprints[fingerprint] && new Date().getTime() - fingerprints[fingerprint] < 0)
         return res.json({ 
             timeout: fingerprints[fingerprint], 
             success: false, 
@@ -81,8 +87,8 @@ app.post('/', async (req, res) => {
             fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
             res.json({ timeout: fingerprints[fingerprint], success: true, message: "" })
         })
-    }).catch((errorObject) => {
-        console.log('The read failed: ' + errorObject.reason);
+    }, (errorObject) => {
+        console.log('The read failed: ' + errorObject.name);
         fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=🔔 ${nameEnc} (${fingerprint}) 🔔&body=${message ? messageEnc : 'No message'}&webhook=${process.env.DOOROPENHOOK}`).then(() => {
             fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
             res.json({ timeout: fingerprints[fingerprint], success: true, message: "" })
