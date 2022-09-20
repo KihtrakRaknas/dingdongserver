@@ -106,6 +106,10 @@ app.get('/assignFingerprint', (req, res) => {
     res.send("Invalid code")
 })
 
+app.get('/alive', (req, res) => {
+    res.send("Server Alive")
+})
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
