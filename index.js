@@ -82,7 +82,7 @@ app.post('/', async (req, res) => {
         if(val)
             returnFinger = val.name
         else{
-            fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=Unknown Fingerprint (${fingerprint})&body=User input name: ${nameEnc}&webhook=${encodeURIComponent(`https://ding-dong-server.herokuapp.com/assignFingerprint?code=${process.env.SECRETCODE}&fingerprint=${fingerprint}&name=`)}&webhookParam=true`)
+            fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=Unknown Fingerprint (${fingerprint})&body=User input name: ${nameEnc}&webhook=${encodeURIComponent(`https://dingdongapi.kihtrak.com/assignFingerprint?code=${process.env.SECRETCODE}&fingerprint=${fingerprint}&name=`)}&webhookParam=true`)
         }
         fetch(`https://n.kihtrak.com/?project=${process.env.NOTIBOTPROJECT}&title=🔔 ${nameEnc} (${returnFinger}) 🔔&body=${message ? messageEnc : 'No message'}&webhook=${process.env.DOOROPENHOOK}`).then(() => {
             fingerprints[fingerprint] = new Date().getTime() + 1000 * 60 * 2
